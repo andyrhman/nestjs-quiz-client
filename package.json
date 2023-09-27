@@ -9,11 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@fortawesome/fontawesome-free": "^6.4.2",
+    "@heroicons/react": "^2.0.18",
+    "@mui/material": "^5.14.11",
+    "@tailwindcss/forms": "^0.5.6",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "latest",
     "daisyui": "^3.8.0",
     "eslint": "latest",
