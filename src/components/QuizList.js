@@ -1,5 +1,6 @@
-import React from 'react';
-import Image from 'next/image';
+import React, {useState} from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 const lists = [
     {
@@ -60,24 +61,41 @@ const lists = [
     },
 ];
 
-const QuizList = ({ title, categories, description, image }) => {
+const QuizList = ({ id, name }) => {
+
+    const router = useRouter();
+    const [page, setPage] = useState(1);
+
+    const startQuiz = async () => {
+        try {
+            await axios.post(`quiz/start-timer/${id}?page=${page}`);
+            // After starting the quiz, navigate to the quiz page
+            router.push(`/quiz/${id}`);
+        } catch (error) {
+            console.error('Error starting quiz', error);
+        }
+    };
+
     return (
-        <div className="card card-compact w-full bg-base-100 shadow-xl md:w-full">
-            <figure>
-                <img src={image} alt="Shoes" className='w-96 h-auto md:w-full'/>
-            </figure>
-            <div className="card-body">
-                <h2 className="card-title">
-                    {title}
-                    <div className="badge badge-secondary">{categories}</div>
-                </h2>
-                <p>{description}</p>
-                <div className="card-actions justify-end">
-                    <button className="btn btn-primary">Join now</button>
+        <div onClick={startQuiz}>
+            <div className="card card-compact w-full bg-base-100 shadow-xl md:w-full">
+                <figure>
+                    <img src="https://via.placeholder.com/300" alt="Shoes" className='w-96 h-auto md:w-full' />
+                </figure>
+                <div className="card-body">
+                    <h2 className="card-title">
+                        {name}
+                        <div className="badge badge-secondary">{name}</div>
+                    </h2>
+                    <p>A Quiz that you can start now!</p>
+                    <div className="card-actions justify-end">
+                        <button className="btn btn-primary">Join now</button>
+                    </div>
                 </div>
             </div>
         </div>
+
     )
 }
 
-export {QuizList, lists};
+export default QuizList;

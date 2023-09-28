@@ -29,8 +29,7 @@ const Auth = () => {
                 rememberMe
             });
             if (data) {
-                // Redirect to the login page
-                router.push('/dashboard');
+                router.push('/');
             } else {
                 // Sign-in failed, display an error message
                 setError('An error occurred during sign-in');
