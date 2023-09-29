@@ -3,9 +3,9 @@ import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import Link from 'next/link'
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid"
-import Countdown from '@/components/Countdown'
 import axios from 'axios'
 import SubmitAnswer from '@/components/SubmitAnswer'
+import Countdown from '@/components/Countdown'
 
 const quiz = () => {
 
@@ -19,6 +19,7 @@ const quiz = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
+  // * Showing the question and store the answer
   useEffect(() => {
     if (id) {
       (
@@ -53,6 +54,36 @@ const quiz = () => {
       )()
     }
   }, [id, page]);
+
+  const [timer, setTimer] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(timer); // Initialize with timer
+
+  // * Showing the category to fetch the timer
+  useEffect(() => {
+    if (id) {
+      (
+        async () => {
+          try {
+            const { data } = await axios.get(`quiz/get-timer/${id}`);
+            setTimer(data.time_limit * 60)
+          } catch (error) {
+            if (error.response && error.response.status === 400) {
+              setError('Invalid UUID format');
+            }
+            if (error.response && error.response.status === 401) {
+              setError('An error occurred');
+              router.push('/login');
+            }
+
+            if (error.response && error.response.status === 403) {
+              setError('An error occurred');
+              router.push('/login');
+            }
+          }
+        }
+      )()
+    }
+  }, [id])
 
   let pageNumbers = [];
 
@@ -108,7 +139,7 @@ const quiz = () => {
 
   // * Submit the answer
   const submitAnswers = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault(); // only call preventDefault if e exists
     try {
       const { data } = await axios.post(`quiz/${id}/answer`, answers);
       console.log(data);
@@ -117,12 +148,42 @@ const quiz = () => {
       console.error(error);
     }
   };
+  
+  // * Timer
+  useEffect(() => {
+    setTimeRemaining(timer);
+  }, [timer]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeRemaining(prevTime => {
+        if (prevTime <= 1) { // when time is up
+          clearInterval(interval); // stop the interval
+          submitAnswers().then(() => {
+            router.push('/');
+          });
+          return 0; // set remaining time to 0
+        } else {
+          return prevTime - 1;
+        }
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const hours = Math.floor(timeRemaining / 3600);
+  const minutes = Math.floor((timeRemaining % 3600) / 60);
+  const seconds = timeRemaining % 60;
 
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        <Countdown />
+        {/* Timer */}
+        <Countdown 
+        hours={hours}
+        minutes={minutes}
+        seconds={seconds}
+        />
 
         <div className='flex float-right'>
           <Link href={'/'} className="btn btn-primary">
