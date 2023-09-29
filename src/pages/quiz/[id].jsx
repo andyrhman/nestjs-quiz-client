@@ -3,12 +3,12 @@ import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import Link from 'next/link'
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid"
-import Answer from '@/components/Answer'
 import Countdown from '@/components/Countdown'
 import axios from 'axios'
 
 const quiz = () => {
 
+  // * Showing the questions
   const [questions, setQuestions] = useState([])
   const [error, setError] = useState('')
 
@@ -27,6 +27,12 @@ const quiz = () => {
 
             setQuestions(data.data);
             setTotalPages(data.meta.last_page);
+            if (answers.length === 0) {
+              const initialAnswers = data.data.map(q => ({ question_no: q.question_no, answer: '' }));
+              setAnswers(initialAnswers);
+            }
+            const currentAnswer = answers.find(a => a.question_no === data.data[0].question_no);
+            setCheckedValue(currentAnswer ? currentAnswer.answer : null);
 
           } catch (error) {
             if (error.response && error.response.status === 400) {
@@ -55,13 +61,52 @@ const quiz = () => {
 
   const next = () => {
     setPage(page + 1);
+    setCheckedValue(null);
   }
 
   const prev = () => {
     if (page > 1) {
       setPage(page - 1);
+      const previousAnswer = answers.find(a => a.question_no === page - 1);
+      setCheckedValue(previousAnswer ? previousAnswer.answer : null);
     }
   };
+
+
+  // * Handling the check answer
+  const [answers, setAnswers] = useState([]);
+  const [answeredPages, setAnsweredPages] = useState([]);
+
+  const [checkedValue, setCheckedValue] = useState(null);
+
+  const handleChange = (question_no, e) => {
+    const existingAnswer = answers.find(answer => answer.question_no === question_no);
+    if (existingAnswer) {
+      const newAnswers = answers.map(answer =>
+        answer.question_no === question_no ? { ...answer, answer: e.target.value } : answer
+      );
+      setAnswers(newAnswers);
+    } else {
+      setAnswers([...answers, { question_no, answer: e.target.value }]);
+    }
+    if (!answeredPages.includes(page)) {
+      setAnsweredPages([...answeredPages, page]);
+    }
+    setCheckedValue(e.target.value);
+    console.log(`Question ${question_no}: ${e.target.value}`);
+  };
+
+  // * Submit the answer
+  const submitAnswers = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(`quiz/${id}/answer`, answers);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   return (
     <Layout>
@@ -76,19 +121,74 @@ const quiz = () => {
         </div>
         <div className="flex flex-col md:flex-row justify-between my-12">
           <div className="w-full md:w-3/4 md:mr-8">
-
-            // * Question
+            {/* // * Question */}
             {questions.map((q) => (
-              <article className="prose lg:prose-xl" key={q.id}>
-                <p>
-                  {q.question}
-                </p>
-              </article>
-            ))}
-            <div className='flex flex-row'>
-              <Answer />
-            </div>
+              <React.Fragment key={q.id}>
+                <article className="prose lg:prose-xl">
+                  <p>
+                    <span className='text-xl font-bold'>{q.question_no}.</span> {q.question}
+                  </p>
+                </article>
+                <div className='flex flex-row'>
+                  {/* // ? Option */}
+                  <form onSubmit={submitAnswers}>
+                    <div className="form-control">
+                      <label className="label cursor-pointer gap-6">
+                        <input
+                          type="checkbox"
+                          value="A"
+                          checked={checkedValue === "A"}
+                          onChange={(e) => handleChange(q.question_no, e)}
+                          className="checkbox checkbox-primary"
+                        />
+                        <span className="label-text">A</span>
+                      </label>
 
+                      <label className="label cursor-pointer gap-6">
+                        <input
+                          type="checkbox"
+                          value="B"
+                          checked={checkedValue === "B"}
+                          onChange={(e) => handleChange(q.question_no, e)}
+                          className="checkbox checkbox-primary"
+                        />
+                        <span className="label-text">B</span>
+                      </label>
+
+                      <label className="label cursor-pointer gap-6">
+                        <input
+                          type="checkbox"
+                          value="C"
+                          checked={checkedValue === "C"}
+                          onChange={(e) => handleChange(q.question_no, e)}
+                          className="checkbox checkbox-primary"
+                        />
+                        <span className="label-text">C</span>
+                      </label>
+
+                      <label className="label cursor-pointer gap-6">
+                        <input
+                          type="checkbox"
+                          value="D"
+                          checked={checkedValue === "D"}
+                          onChange={(e) => handleChange(q.question_no, e)}
+                          className="checkbox checkbox-primary"
+                        />
+                        <span className="label-text">D</span>
+                      </label>
+                    </div>
+                    <button
+                      className="btn btn-block btn-success mt-6"
+                      type='submit'
+                    >
+                      Submit Answer
+                    </button>
+                  </form>
+
+                </div>
+              </React.Fragment>
+
+            ))}
             <div className='flex flex-row justify-between mt-4'>
               <button className="btn btn-primary" onClick={prev}>Previous</button>
               <button className="btn btn-primary" onClick={next}>Next</button>
@@ -104,13 +204,15 @@ const quiz = () => {
                     {number}
                   </button>
                   :
-                  <button key={number} className="join-item btn" onClick={() => setPage(number)}>
+                  <button
+                    key={number}
+                    className={`join-item btn ${answeredPages.includes(number) ? 'bg-green-500' : ''}`}
+                    onClick={() => setPage(number)}
+                  >
                     {number}
                   </button>
               ))}
             </div>
-
-
           </div>
         </div>
       </div>

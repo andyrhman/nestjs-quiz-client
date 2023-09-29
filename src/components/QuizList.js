@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
@@ -65,14 +65,30 @@ const QuizList = ({ id, name }) => {
 
     const router = useRouter();
     const [page, setPage] = useState(1);
+    const [error, setError] = useState('')
 
     const startQuiz = async () => {
         try {
-            await axios.post(`quiz/start-timer/${id}?page=${page}`);
+            const {data} = await axios.post(`quiz/start-timer/${id}?page=${page}`);
             // After starting the quiz, navigate to the quiz page
             router.push(`/quiz/${id}`);
         } catch (error) {
             console.error('Error starting quiz', error);
+            
+            if (error.response && error.response.status === 400 && error.response.data && error.response.data.message) {
+                const errorMessage = error.response.data.message;
+                toast.error(setError(errorMessage), {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Slide
+                });
+            }
         }
     };
 
