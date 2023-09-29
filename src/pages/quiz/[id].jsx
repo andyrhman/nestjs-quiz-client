@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid"
 import Countdown from '@/components/Countdown'
 import axios from 'axios'
+import SubmitAnswer from '@/components/SubmitAnswer'
 
 const quiz = () => {
 
@@ -60,8 +61,12 @@ const quiz = () => {
   }
 
   const next = () => {
-    setPage(page + 1);
-    setCheckedValue(null);
+    if (page < totalPages) {
+      setPage(page + 1);
+      setCheckedValue(null);
+    } else if (isLastQuestionAnswered) {
+      document.getElementById('my_modal_3').showModal();
+    }
   }
 
   const prev = () => {
@@ -72,6 +77,8 @@ const quiz = () => {
     }
   };
 
+  // * Handling the submit question show modal after the last question page
+  const [isLastQuestionAnswered, setIsLastQuestionAnswered] = useState(false);
 
   // * Handling the check answer
   const [answers, setAnswers] = useState([]);
@@ -92,6 +99,9 @@ const quiz = () => {
     if (!answeredPages.includes(page)) {
       setAnsweredPages([...answeredPages, page]);
     }
+    if (page === totalPages) {
+      setIsLastQuestionAnswered(true);
+    }
     setCheckedValue(e.target.value);
     console.log(`Question ${question_no}: ${e.target.value}`);
   };
@@ -102,6 +112,7 @@ const quiz = () => {
     try {
       const { data } = await axios.post(`quiz/${id}/answer`, answers);
       console.log(data);
+      document.getElementById('my_modal_3').close();
     } catch (error) {
       console.error(error);
     }
@@ -131,7 +142,7 @@ const quiz = () => {
                 </article>
                 <div className='flex flex-row'>
                   {/* // ? Option */}
-                  <form onSubmit={submitAnswers}>
+                  <form>
                     <div className="form-control">
                       <label className="label cursor-pointer gap-6">
                         <input
@@ -177,12 +188,6 @@ const quiz = () => {
                         <span className="label-text">D</span>
                       </label>
                     </div>
-                    <button
-                      className="btn btn-block btn-success mt-6"
-                      type='submit'
-                    >
-                      Submit Answer
-                    </button>
                   </form>
 
                 </div>
@@ -213,6 +218,8 @@ const quiz = () => {
                   </button>
               ))}
             </div>
+            <SubmitAnswer submitAnswers={submitAnswers} />
+
           </div>
         </div>
       </div>
