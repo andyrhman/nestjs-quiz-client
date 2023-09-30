@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Slide, toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 
 const lists = [
@@ -65,19 +66,19 @@ const QuizList = ({ id, name }) => {
 
     const router = useRouter();
     const [page, setPage] = useState(1);
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
 
     const startQuiz = async () => {
         try {
-            const {data} = await axios.post(`quiz/start-timer/${id}?page=${page}`);
+            await axios.post(`quiz/start-timer/${id}?page=${page}`);
             // After starting the quiz, navigate to the quiz page
             router.push(`/quiz/${id}`);
         } catch (error) {
             console.error('Error starting quiz', error);
-            
+
             if (error.response && error.response.status === 400 && error.response.data && error.response.data.message) {
                 const errorMessage = error.response.data.message;
-                toast.error(setError(errorMessage), {
+                setError(toast.error((errorMessage), {
                     position: "top-center",
                     autoClose: 2000,
                     hideProgressBar: true,
@@ -87,7 +88,7 @@ const QuizList = ({ id, name }) => {
                     progress: undefined,
                     theme: "colored",
                     transition: Slide
-                });
+                }));
             }
         }
     };
