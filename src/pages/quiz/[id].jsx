@@ -1,3 +1,5 @@
+// ? The code for storing multiple answer and then submit it to the server
+// * https://www.phind.com/search?cache=tfffloozc1nwwyyaa7dknybf
 import React, { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'

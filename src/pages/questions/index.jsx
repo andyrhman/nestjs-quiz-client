@@ -43,7 +43,7 @@ const questions = () => {
             <div className="container mx-auto px-4 py-8 max-w-xl md:max-w-xl">
                 <div className='md:flex md:flex-col'>
 
-                    <h4 className='text-center font-extrabold'>Available Categories</h4>
+                    <h4 className='text-center font-extrabold mb-4'>Available Categories</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {categories?.map((c) => (
                             <Link href={`questions/${c.id}`} key={c.id}>

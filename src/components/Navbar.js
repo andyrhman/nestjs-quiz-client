@@ -26,7 +26,7 @@ const Navbar = () => {
                         </ul>
                     </div>
                     {/*  */}
-                    <a className="btn btn-ghost normal-case text-xl">daisyUI</a>
+                    <Link href={"/"} className="btn btn-ghost normal-case text-xl">QuizzA</Link>
                 </div>
                 {/* If the screen is larger use hidden lg:flex */}
                 <div className='navbar-center hidden lg:flex'>
