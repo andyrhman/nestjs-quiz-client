@@ -34,8 +34,6 @@ const index = () => {
                 }
             }
         )();
-
-
     }, []);
     return (
         <Layout>
@@ -52,7 +50,6 @@ const index = () => {
                         ))}
                     </div>
                 </div>
-
             </div>
         </Layout>
     )

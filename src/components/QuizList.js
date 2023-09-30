@@ -90,6 +90,21 @@ const QuizList = ({ id, name }) => {
                     transition: Slide
                 }));
             }
+
+            if (error.response && error.response.data && error.response.data.message && error.response.status === 401) {
+                const errorMessage = error.response.data.message;
+                setError(toast.error((errorMessage), {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    transition: Slide
+                }));
+            }
         }
     };
 
