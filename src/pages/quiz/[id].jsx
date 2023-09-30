@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import Link from 'next/link'
-import { ArrowLeftCircleIcon } from "@heroicons/react/24/solid"
+import { ArrowLeftCircleIcon, CheckCircleIcon } from "@heroicons/react/24/solid"
 import axios from 'axios'
 import SubmitAnswer from '@/components/SubmitAnswer'
 import Countdown from '@/components/Countdown'
@@ -137,18 +137,26 @@ const quiz = () => {
     console.log(`Question ${question_no}: ${e.target.value}`);
   };
 
+  const answersRef = useRef();
+
+  // * Update the ref whenever answers change
+  useEffect(() => {
+    answersRef.current = answers;
+  }, [answers]);
+
   // * Submit the answer
   const submitAnswers = async (e) => {
-    if (e) e.preventDefault(); // only call preventDefault if e exists
+    if (e) e.preventDefault();
     try {
-      const { data } = await axios.post(`quiz/${id}/answer`, answers);
+      const { data } = await axios.post(`quiz/${id}/answer`, answersRef.current);
       console.log(data);
       document.getElementById('my_modal_3').close();
+      router.push('/');
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   // * Timer
   useEffect(() => {
     setTimeRemaining(timer);
@@ -157,18 +165,18 @@ const quiz = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeRemaining(prevTime => {
-        if (prevTime <= 1) { // when time is up
+        if (prevTime <= 31) { // when time is up
           clearInterval(interval); // stop the interval
-          submitAnswers().then(() => {
-            router.push('/');
-          });
+          submitAnswers();
           return 0; // set remaining time to 0
         } else {
           return prevTime - 1;
         }
       });
     }, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const hours = Math.floor(timeRemaining / 3600);
@@ -179,10 +187,10 @@ const quiz = () => {
     <Layout>
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Timer */}
-        <Countdown 
-        hours={hours}
-        minutes={minutes}
-        seconds={seconds}
+        <Countdown
+          hours={hours}
+          minutes={minutes}
+          seconds={seconds}
         />
 
         <div className='flex float-right'>
@@ -279,6 +287,12 @@ const quiz = () => {
                   </button>
               ))}
             </div>
+            <button
+              className='btn btn-block btn-success'
+              onClick={() => document.getElementById('my_modal_3').showModal()}
+            >
+              <CheckCircleIcon strokeWidth={2} className="h-4 w-4" />Submit Answer
+            </button>
             <SubmitAnswer submitAnswers={submitAnswers} />
 
           </div>
