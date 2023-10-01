@@ -153,7 +153,7 @@ const quiz = () => {
       const { data } = await axios.post(`quiz/${id}/answer`, answersRef.current);
       console.log(data);
       document.getElementById('my_modal_3').close();
-      router.push('/');
+      router.push(`/scores/${id}`);
     } catch (error) {
       console.error(error);
     }
@@ -223,7 +223,7 @@ const quiz = () => {
                           onChange={(e) => handleChange(q.question_no, e)}
                           className="checkbox checkbox-primary"
                         />
-                        <span className="label-text">A</span>
+                        <span className="label-text">{q.opt1}</span>
                       </label>
 
                       <label className="label cursor-pointer gap-6">
@@ -234,7 +234,7 @@ const quiz = () => {
                           onChange={(e) => handleChange(q.question_no, e)}
                           className="checkbox checkbox-primary"
                         />
-                        <span className="label-text">B</span>
+                        <span className="label-text">{q.opt2}</span>
                       </label>
 
                       <label className="label cursor-pointer gap-6">
@@ -245,7 +245,7 @@ const quiz = () => {
                           onChange={(e) => handleChange(q.question_no, e)}
                           className="checkbox checkbox-primary"
                         />
-                        <span className="label-text">C</span>
+                        <span className="label-text">{q.opt3}</span>
                       </label>
 
                       <label className="label cursor-pointer gap-6">
@@ -256,7 +256,7 @@ const quiz = () => {
                           onChange={(e) => handleChange(q.question_no, e)}
                           className="checkbox checkbox-primary"
                         />
-                        <span className="label-text">D</span>
+                        <span className="label-text">{q.opt4}</span>
                       </label>
                     </div>
                   </form>

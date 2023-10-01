@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { PlusCircleIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid';
+import { PlusCircleIcon, ArrowLeftOnRectangleIcon, TrophyIcon } from '@heroicons/react/24/solid';
 
 const Navbar = () => {
     return (
@@ -19,6 +19,11 @@ const Navbar = () => {
                                 </Link>
                             </li>
                             <li>
+                                <Link href={"/scores"}>
+                                    <TrophyIcon strokeWidth={2} className="h-6 w-6" />My Scores
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href={"/login"}>
                                     <ArrowLeftOnRectangleIcon strokeWidth={2} className="h-6 w-6" />Login
                                 </Link>
@@ -32,6 +37,9 @@ const Navbar = () => {
                 <div className='navbar-center hidden lg:flex'>
                     <Link href={"/questions"} className="btn btn-ghost normal-case text-md">
                         <PlusCircleIcon strokeWidth={2} className="h-6 w-6" />Create Questions
+                    </Link>
+                    <Link href={"/scores"} className="btn btn-ghost normal-case text-md">
+                        <TrophyIcon strokeWidth={2} className="h-6 w-6" />My Scores
                     </Link>
                 </div>
                 <div className='navbar-end'>
