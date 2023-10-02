@@ -215,49 +215,54 @@ const quiz = () => {
                   {/* // ? Option */}
                   <form>
                     <div className="form-control">
-                      <label className="label cursor-pointer gap-6">
-                        <input
-                          type="checkbox"
-                          value="A"
-                          checked={checkedValue === "A"}
-                          onChange={(e) => handleChange(q.question_no, e)}
-                          className="checkbox checkbox-primary"
-                        />
-                        <span className="label-text">{q.opt1}</span>
-                      </label>
-
-                      <label className="label cursor-pointer gap-6">
-                        <input
-                          type="checkbox"
-                          value="B"
-                          checked={checkedValue === "B"}
-                          onChange={(e) => handleChange(q.question_no, e)}
-                          className="checkbox checkbox-primary"
-                        />
-                        <span className="label-text">{q.opt2}</span>
-                      </label>
-
-                      <label className="label cursor-pointer gap-6">
-                        <input
-                          type="checkbox"
-                          value="C"
-                          checked={checkedValue === "C"}
-                          onChange={(e) => handleChange(q.question_no, e)}
-                          className="checkbox checkbox-primary"
-                        />
-                        <span className="label-text">{q.opt3}</span>
-                      </label>
-
-                      <label className="label cursor-pointer gap-6">
-                        <input
-                          type="checkbox"
-                          value="D"
-                          checked={checkedValue === "D"}
-                          onChange={(e) => handleChange(q.question_no, e)}
-                          className="checkbox checkbox-primary"
-                        />
-                        <span className="label-text">{q.opt4}</span>
-                      </label>
+                      <div className='flex flex-row '>
+                        <label className="label cursor-pointer gap-6">
+                          <input
+                            type="checkbox"
+                            value="A"
+                            checked={checkedValue === "A"}
+                            onChange={(e) => handleChange(q.question_no, e)}
+                            className="checkbox checkbox-primary"
+                          />
+                        </label>
+                        <p className="label-text pt-2">{q.opt1}</p>
+                      </div>
+                      <div className='flex flex-row '>
+                        <label className="label cursor-pointer gap-6">
+                          <input
+                            type="checkbox"
+                            value="B"
+                            checked={checkedValue === "B"}
+                            onChange={(e) => handleChange(q.question_no, e)}
+                            className="checkbox checkbox-primary"
+                          />
+                        </label>
+                        <p className="label-text pt-2">{q.opt2}</p>
+                      </div>
+                      <div className='flex flex-row '>
+                        <label className="label cursor-pointer gap-6">
+                          <input
+                            type="checkbox"
+                            value="C"
+                            checked={checkedValue === "C"}
+                            onChange={(e) => handleChange(q.question_no, e)}
+                            className="checkbox checkbox-primary"
+                          />
+                        </label>
+                        <p className="label-text pt-2">{q.opt3}</p>
+                      </div>
+                      <div className='flex flex-row'>
+                        <label className="label cursor-pointer gap-6">
+                          <input
+                            type="checkbox"
+                            value="D"
+                            checked={checkedValue === "D"}
+                            onChange={(e) => handleChange(q.question_no, e)}
+                            className="checkbox checkbox-primary"
+                          />
+                        </label>
+                        <p className="label-text pt-2">{q.opt4}</p>
+                      </div>
                     </div>
                   </form>
 
